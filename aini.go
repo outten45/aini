@@ -39,7 +39,7 @@ func (h *Hosts) Parse() error {
 
 	for scanner.Scan() {
 		line := strings.Trim(scanner.Text(), " ")
-		// fmt.Println(line)
+		// fmt.Println(activeGroupName, ":", line)
 
 		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
 			activeGroupName = strings.Replace(strings.Replace(line, "[", "", -1), "]", "", -1)

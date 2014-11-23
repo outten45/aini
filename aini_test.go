@@ -26,7 +26,6 @@ func createHosts(input string) Hosts {
 	return *v
 }
 
-//
 func TestGroupExists(t *testing.T) {
 	v := createHosts(input1())
 	matched := false
@@ -38,19 +37,30 @@ func TestGroupExists(t *testing.T) {
 	}
 }
 
-func TestServerExistsInGroup(t *testing.T) {
+func TestHostExistsInGroups(t *testing.T) {
 	v := createHosts(input1())
-	if hosts, ok := v.Groups["dbs"]; ok {
-		matched := false
-		for _, host := range hosts {
-			if host.Name == "dbhost2" {
-				matched = true
+	exportedHosts := map[string][]Host{
+		"dbs": []Host{Host{Name: "dbhost1"},
+			Host{Name: "dbhost2"}},
+		"ungrouped": []Host{Host{Name: "myhost1"}},
+	}
+
+	for group, ehosts := range exportedHosts {
+		for _, ehost := range ehosts {
+			if hosts, ok := v.Groups[group]; ok {
+				matched := false
+				for _, host := range hosts {
+					if host.Name == ehost.Name {
+						matched = true
+					}
+				}
+				if !matched {
+					t.Error("Server ", ehost.Name, " was not found in ", group)
+				}
+			} else {
+				t.Error(group, " group doesn't exist")
 			}
 		}
-		if !matched {
-			t.Error("Server dbhost2 was not found in dbs")
-		}
-	} else {
-		t.Error("\"dbs\" group didn't exists")
+
 	}
 }
