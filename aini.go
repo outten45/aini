@@ -43,7 +43,9 @@ func (h *Hosts) Parse() error {
 		// fmt.Println(activeGroupName, ":", line)
 
 		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
-			activeGroupName = strings.Replace(strings.Replace(line, "[", "", -1), "]", "", -1)
+			replacer := strings.NewReplacer("[", "", "]", "")
+			activeGroupName = replacer.Replace(line)
+
 			if _, ok := h.Groups[activeGroupName]; !ok {
 				h.Groups[activeGroupName] = make([]Host, 0)
 			}
