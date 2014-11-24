@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func input1() string {
-	return `
+var input1 string = `
 myhost1
+
 [dbs]
 dbhost1
 dbhost2
@@ -17,7 +17,6 @@ my-app-server1
 my-app-server2:3000
 
 `
-}
 
 func createHosts(input string) Hosts {
 	testInput := strings.NewReader(input)
@@ -27,7 +26,7 @@ func createHosts(input string) Hosts {
 }
 
 func TestGroupExists(t *testing.T) {
-	v := createHosts(input1())
+	v := createHosts(input1)
 	matched := false
 	if _, ok := v.Groups["dbs"]; ok {
 		matched = true
@@ -38,7 +37,7 @@ func TestGroupExists(t *testing.T) {
 }
 
 func TestHostExistsInGroups(t *testing.T) {
-	v := createHosts(input1())
+	v := createHosts(input1)
 	exportedHosts := map[string][]Host{
 		"dbs": []Host{Host{Name: "dbhost1", Port: 22},
 			Host{Name: "dbhost2", Port: 22}},
@@ -54,15 +53,15 @@ func TestHostExistsInGroups(t *testing.T) {
 					if host.Name == ehost.Name {
 						matched = true
 						if host.Port != ehost.Port {
-							t.Errorf("Host port %v does not match expected port %v", host.Port, ehost.Port)
+							t.Errorf("Host port '%v' does not match expected port of '%v'.\n", host.Port, ehost.Port)
 						}
 					}
 				}
 				if !matched {
-					t.Error("Server ", ehost.Name, " was not found in ", group)
+					t.Errorf("Server '%+v' was not found in '%+v'.\n", ehost.Name, group)
 				}
 			} else {
-				t.Error(group, " group doesn't exist")
+				t.Errorf("'%v' group doesn't exist.\n", group)
 			}
 		}
 
