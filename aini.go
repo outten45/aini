@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/flynn/go-shlex"
@@ -53,9 +54,29 @@ func (h *Hosts) Parse() error {
 			if err != nil {
 				fmt.Println("couldn't tokenizer ", line)
 			}
-			host := Host{Name: parts[0]}
+			host := getHost(parts)
 			h.Groups[activeGroupName] = append(h.Groups[activeGroupName], host)
 		}
 	}
 	return nil
+}
+
+func getHost(parts []string) Host {
+	hostname := parts[0]
+	port := 22
+	if (strings.Contains(hostname, "[") &&
+		strings.Contains(hostname, "]") &&
+		strings.Contains(hostname, ":") &&
+		(strings.LastIndex(hostname, "]") < strings.LastIndex(hostname, ":"))) ||
+		(!strings.Contains(hostname, "]") && strings.Contains(hostname, ":")) {
+
+		splithost := strings.Split(hostname, ":")
+		if i, err := strconv.Atoi(splithost[1]); err == nil {
+			port = i
+		}
+		hostname = splithost[0]
+	}
+	host := Host{Name: hostname, Port: port}
+
+	return host
 }

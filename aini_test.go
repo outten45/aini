@@ -14,7 +14,7 @@ dbhost2
 
 [apps]
 my-app-server1
-my-app-server2
+my-app-server2:3000
 
 `
 }
@@ -40,9 +40,10 @@ func TestGroupExists(t *testing.T) {
 func TestHostExistsInGroups(t *testing.T) {
 	v := createHosts(input1())
 	exportedHosts := map[string][]Host{
-		"dbs": []Host{Host{Name: "dbhost1"},
-			Host{Name: "dbhost2"}},
-		"ungrouped": []Host{Host{Name: "myhost1"}},
+		"dbs": []Host{Host{Name: "dbhost1", Port: 22},
+			Host{Name: "dbhost2", Port: 22}},
+		"ungrouped": []Host{Host{Name: "myhost1", Port: 22}},
+		"apps":      []Host{Host{Name: "my-app-server2", Port: 3000}},
 	}
 
 	for group, ehosts := range exportedHosts {
@@ -52,6 +53,9 @@ func TestHostExistsInGroups(t *testing.T) {
 				for _, host := range hosts {
 					if host.Name == ehost.Name {
 						matched = true
+						if host.Port != ehost.Port {
+							t.Errorf("Host port %v does not match expected port %v", host.Port, ehost.Port)
+						}
 					}
 				}
 				if !matched {
