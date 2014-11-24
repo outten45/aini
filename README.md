@@ -13,6 +13,12 @@ Then import the package into your project.
 import "github.com/outtenr/aini"
 ```
 
+### TODO
+
+* expanding host names
+* :vars and :children in the group
+* additional ssh options
+
 ### Credits
 
 To the [Ansible](https://github.com/ansible/ansible) team for writing easy to follow code.
