@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/flynn/go-shlex"
+	"github.com/ryanuber/go-glob"
 )
 
 type Hosts struct {
@@ -19,11 +20,6 @@ type Host struct {
 	Name string
 	Port int
 }
-
-// type Group struct {
-// 	Name    string
-// 	Servers []string
-// }
 
 func NewParser(r io.Reader) (*Hosts, error) {
 	input := bufio.NewReader(r)
@@ -61,6 +57,18 @@ func (h *Hosts) Parse() error {
 		}
 	}
 	return nil
+}
+
+func (h *Hosts) Match(m string) []Host {
+	matchedHosts := make([]Host, 0, 5)
+	for _, hosts := range h.Groups {
+		for _, host := range hosts {
+			if glob.Glob(m, host.Name) {
+				matchedHosts = append(matchedHosts, host)
+			}
+		}
+	}
+	return matchedHosts
 }
 
 func getHost(parts []string) Host {

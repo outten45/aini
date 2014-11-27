@@ -67,3 +67,27 @@ func TestHostExistsInGroups(t *testing.T) {
 
 	}
 }
+
+func TestHostMatching(t *testing.T) {
+	v := createHosts(input1)
+	hosts := v.Match("db*")
+	if len(hosts) != 2 {
+		t.Errorf("Number of hosts don't match 2, but were %v instead", len(hosts))
+	}
+	if !matchHosts(hosts, "dbhost1") {
+		t.Errorf("dbhost1 should be in the list, but found %+v", hosts)
+	}
+	if !matchHosts(hosts, "dbhost2") {
+		t.Errorf("dbhost2 should be in the list, but found %+v", hosts)
+	}
+}
+
+func matchHosts(hosts []Host, hostToMatch string) bool {
+	match := false
+	for _, host := range hosts {
+		if host.Name == hostToMatch {
+			match = true
+		}
+	}
+	return match
+}
