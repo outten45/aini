@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"path"
 	"strconv"
 	"strings"
 
 	"github.com/flynn/go-shlex"
-	"github.com/ryanuber/go-glob"
 )
 
 type Hosts struct {
@@ -63,7 +63,7 @@ func (h *Hosts) Match(m string) []Host {
 	matchedHosts := make([]Host, 0, 5)
 	for _, hosts := range h.Groups {
 		for _, host := range hosts {
-			if glob.Glob(m, host.Name) {
+			if m, err := path.Match(m, host.Name); err == nil && m {
 				matchedHosts = append(matchedHosts, host)
 			}
 		}
