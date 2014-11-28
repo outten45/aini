@@ -1,0 +1,9 @@
+general-host.com
+
+[dbs]
+db-host1
+db-host2
+
+[apps]
+app-server1
+app-server2:3000

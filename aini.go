@@ -2,8 +2,10 @@ package aini
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"path"
 	"strconv"
 	"strings"
@@ -21,15 +23,29 @@ type Host struct {
 	Port int
 }
 
+func NewFile(f string) (*Hosts, error) {
+	bs, err := ioutil.ReadFile(f)
+	if err != nil {
+		return &Hosts{}, err
+	}
+
+	h, err := NewParser(bytes.NewReader(bs))
+	if err != nil {
+		return &Hosts{}, err
+	}
+
+	return h, nil
+}
+
 func NewParser(r io.Reader) (*Hosts, error) {
 	input := bufio.NewReader(r)
 	hosts := &Hosts{input: input}
+	hosts.parse()
 	return hosts, nil
 }
 
-func (h *Hosts) Parse() error {
+func (h *Hosts) parse() error {
 	scanner := bufio.NewScanner(h.input)
-
 	activeGroupName := "ungrouped"
 	h.Groups = make(map[string][]Host)
 	h.Groups[activeGroupName] = make([]Host, 0)

@@ -21,7 +21,11 @@ my-app-server2:3000
 func createHosts(input string) Hosts {
 	testInput := strings.NewReader(input)
 	v, _ := NewParser(testInput)
-	v.Parse()
+	return *v
+}
+
+func createHostsFromFile(f string) Hosts {
+	v, _ := NewFile(f)
 	return *v
 }
 
@@ -80,6 +84,18 @@ func TestHostMatching(t *testing.T) {
 	if !matchHosts(hosts, "dbhost2") {
 		t.Errorf("dbhost2 should be in the list, but found %+v", hosts)
 	}
+}
+
+func TestFromFileGroupExists(t *testing.T) {
+	v := createHostsFromFile("sample_hosts")
+	matched := false
+	if _, ok := v.Groups["dbs"]; ok {
+		matched = true
+	}
+	if !matched {
+		t.Error("Expected to find the group \"dbs\"")
+	}
+
 }
 
 func matchHosts(hosts []Host, hostToMatch string) bool {
