@@ -87,6 +87,10 @@ func (h *Hosts) Match(m string) []Host {
 	return matchedHosts
 }
 
+func (h *Host) HostPort() string {
+	return fmt.Sprintf("%s:%d", h.Name, h.Port)
+}
+
 func getHost(parts []string) Host {
 	hostname := parts[0]
 	port := 22
