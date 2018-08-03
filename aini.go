@@ -61,7 +61,7 @@ func (h *Hosts) parse() error {
 			if _, ok := h.Groups[activeGroupName]; !ok {
 				h.Groups[activeGroupName] = make([]Host, 0)
 			}
-		} else if strings.HasPrefix(line, ";") || line == "" {
+		} else if strings.HasPrefix(line, ";") || strings.HasPrefix(line, "#") || line == "" {
 			// do nothing
 		} else if activeGroupName != "" {
 			parts, err := shlex.Split(line)
