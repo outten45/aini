@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var input1 string = `
+var input1 = `
 myhost1
 
 [dbs]
