@@ -107,3 +107,23 @@ func matchHosts(hosts []Host, hostToMatch string) bool {
 	}
 	return match
 }
+
+func TestReadSSHParameters(t *testing.T) {
+	expectedHosts := []Host{
+		Host{Name: "sql-host1", Port: 3306, User: "ubuntu", Pass: "ubuntu"},
+		Host{Name: "sql-host2", Port: 3306, User: "ubuntu", PrivateKey: "/tmp/some/key"},
+	}
+	i := createHostsFromFile("sample_hosts")
+	sqlGroup := i.Groups["sql"]
+	for i, host := range sqlGroup {
+		if expectedHosts[i].User != host.User {
+			t.Errorf("mismatched users: %v / %v", expectedHosts[i], host)
+		}
+		if expectedHosts[i].Pass != host.Pass {
+			t.Errorf("mismatched pass: %v / %v", expectedHosts[i], host)
+		}
+		if expectedHosts[i].PrivateKey != host.PrivateKey {
+			t.Errorf("mismatched private key: %v / %v", expectedHosts[i], host)
+		}
+	}
+}

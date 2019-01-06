@@ -1,8 +1,13 @@
 general-host.com
 
 [dbs]
-db-host1
-db-host2
+db-host1 ansible_user=root
+db-host2 ansible_user=ubuntu ansible_ssh_pass=ubuntu
+db-host3 ansible_user=ubuntu ansible_ssh_private_key_file=/tmp/some/key
+
+[sql]
+sql-host1:3306 ansible_user=ubuntu ansible_ssh_pass=ubuntu
+sql-host2:3306 ansible_user=ubuntu ansible_ssh_private_key_file=/tmp/some/key
 
 [apps]
 app-server1
