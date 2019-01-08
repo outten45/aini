@@ -19,8 +19,11 @@ type Hosts struct {
 }
 
 type Host struct {
-	Name string
-	Port int
+	Name       string
+	Port       int
+	User       string
+	Pass       string
+	PrivateKey string
 }
 
 func NewFile(f string) (*Hosts, error) {
@@ -66,7 +69,7 @@ func (h *Hosts) parse() error {
 		} else if activeGroupName != "" {
 			parts, err := shlex.Split(line)
 			if err != nil {
-				fmt.Println("couldn't tokenizer ", line)
+				fmt.Println("couldn't tokenize: ", line)
 			}
 			host := getHost(parts)
 			h.Groups[activeGroupName] = append(h.Groups[activeGroupName], host)
@@ -97,12 +100,32 @@ func getHost(parts []string) Host {
 		(!strings.Contains(hostname, "]") && strings.Contains(hostname, ":")) {
 
 		splithost := strings.Split(hostname, ":")
+		// fmt.Printf("splithost %+v", splithost)
 		if i, err := strconv.Atoi(splithost[1]); err == nil {
 			port = i
 		}
 		hostname = splithost[0]
 	}
+	params := parts[1:]
 	host := Host{Name: hostname, Port: port}
-
+	parseParameters(params, &host)
 	return host
+}
+
+func parseParameters(params []string, host *Host) {
+	for _, p := range params {
+		if strings.Contains(p, "ansible_user") {
+			host.User = strings.Split(p, "=")[1]
+			continue
+		} else if strings.Contains(p, "ansible_ssh_pass") {
+			host.Pass = strings.Split(p, "=")[1]
+			continue
+		} else if strings.Contains(p, "ansible_ssh_private_key_file") {
+			host.PrivateKey = strings.Split(p, "=")[1]
+			continue
+		} else {
+			fmt.Printf("unsupported ssh parameter: %v\n", p)
+			continue
+		}
+	}
 }

@@ -5,12 +5,12 @@ Simple library for parsing Ansible host files (ini) in Go.
 ### Installing
 Use the 'go get' command to download the package.
 ```bash
-go get github.com/outtenr/aini
+go get github.com/outten45/aini
 ```
 
 Then import the package into your project.
 ```go
-import "github.com/outtenr/aini"
+import "github.com/outten45/aini"
 ```
 
 ### TODO
