@@ -20,10 +20,11 @@ type Hosts struct {
 
 type Host struct {
 	Name       string
-	Port       int
-	User       string
-	Pass       string
-	PrivateKey string
+	Port       int      `json:",omitempty"`
+	User       string   `json:",omitempty"`
+	Pass       string   `json:",omitempty"`
+	PrivateKey string   `json:",omitempty"`
+	Rest       []string `json:",omitempty"`
 }
 
 func NewFile(f string) (*Hosts, error) {
@@ -124,7 +125,7 @@ func parseParameters(params []string, host *Host) {
 			host.PrivateKey = strings.Split(p, "=")[1]
 			continue
 		} else {
-			fmt.Printf("unsupported ssh parameter: %v\n", p)
+			host.Rest = append(host.Rest, p)
 			continue
 		}
 	}
