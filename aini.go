@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/flynn/go-shlex"
+	"github.com/google/shlex"
 )
 
 type Hosts struct {
